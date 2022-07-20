@@ -5,7 +5,7 @@ const fs = require('fs');
 const cTable = require('console.table');
 const { allowedNodeEnvironmentFlags } = require('process');
 // connect to database 
-const db = require('/config/connection.js');
+const db = require('./config/connection.js');
 
 // Function to prompt array of questions 
 const promptQuestions = () => {
@@ -56,6 +56,7 @@ function viewEmployees() {
             return;
         }
         console.table(rows);
+        promptQuestions();
     });
 };
 
@@ -121,6 +122,18 @@ function addEmployee() {
             }
         },
     ])
+     //.then 
+    // const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+    // const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
+
+    // db.query(sql, params, (err, result) => {
+    //      if (err) {
+     //   console.log(err)
+    //}
+    //     console.log('Employee added to database!')
+    //     });
+    // });
+    // (promptQuestions());
 };
 
 // function to update employee
@@ -167,6 +180,7 @@ function viewRoles() {
             return;
         }
         console.table(rows);
+        promptQuestions();
     });
 };
 
@@ -214,6 +228,18 @@ function addRole() {
             }
         }
     ])
+     //.then 
+    // const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+    // const params = [body.title, body.salary, body.department_id];
+
+    // db.query(sql, params, (err, result) => {
+    //      if (err) {
+     //   console.log(err)
+    //}
+    //     console.log('Role added to database!')
+    //     });
+    // });
+    // (promptQuestions());
 };
 
 // Function viewDepartments to view Department table
@@ -225,6 +251,7 @@ function viewDepartments() {
             return;
         }
         console.table(rows);
+        promptQuestions();
     });
 };
 
@@ -246,6 +273,18 @@ function addDepartment() {
             }
         },
     ])
+     //.then 
+    // const sql = `INSERT INTO department (name) VALUES (?)`;
+    // const params = [body.name];
+
+    // db.query(sql, params, (err, result) => {
+    //      if (err) {
+     //   console.log(err)
+    //}
+    //     console.log('Department added to database!')
+    //     });
+    // });
+    // (promptQuestions());
 };
 
 // Initialize app
