@@ -4,6 +4,8 @@ const fs = require('fs');
 // require console.table Node.js package so MySQL tables appear in console
 const cTable = require('console.table');
 const { allowedNodeEnvironmentFlags } = require('process');
+// connect to database 
+const db = require('/config/connection.js');
 
 // Function to prompt array of questions 
 const promptQuestions = () => {
@@ -60,12 +62,14 @@ function viewEmployees() {
 // Function addEmployee for adding an employee
 function addEmployee() {
     inquirer.prompt([
+        // How do we pull role choices from role database? 
+        // const sql = `SELECT role.id, role.title, role.salary, role.department
+        //             FROM role`;
         // If 'Add an employee' is selected, ask for first name, last name, role, manager and add to database
         { // ask for employee first name
             type: 'input',
             name: 'first_name',
             message: "What is the employee's first name? (Required)",
-            when: (input) => input.options === "Add an employee",
             validate: first_nameInput => {
                 if (first_nameInput) {
                     return true;
@@ -79,7 +83,6 @@ function addEmployee() {
             type: 'input',
             name: 'last_name',
             message: "What is the employee's last name? (Required)",
-            when: (input) => input.options === "Add an employee",
             validate: last_nameInput => {
                 if (last_nameInput) {
                     return true;
@@ -90,10 +93,10 @@ function addEmployee() {
             }
         },
         { // ask for employee role
-            type: 'input',
+            type: 'list',
             name: 'employee_role',
             message: "What is the employee's role? (Required)",
-            when: (input) => input.options === "Add an employee",
+            choices: [],
             validate: employee_roleInput => {
                 if (employee_roleInput) {
                     return true;
@@ -104,10 +107,10 @@ function addEmployee() {
             }
         },
         { // ask for manager's name
-            type: 'input',
+            type: 'list',
             name: 'employee_manager',
             message: "Who is the employee's manager? (Required)",
-            when: (input) => input.options === "Add an employee",
+            choices: [],
             validate: employee_managerInput => {
                 if (employee_managerInput) {
                     return true;
@@ -128,7 +131,6 @@ function updateEmployee() {
             type: 'list',
             name: 'options',
             message: "Which employee's role do you want to update? (Required)",
-            when: (input) => input.options === "Update an employee role",
             choices: [],
             validate: optionsInput => {
                 if (optionsInput) {
@@ -143,7 +145,6 @@ function updateEmployee() {
             type: 'list',
             name: 'update_role',
             message: "Which role do you want to assign to the selected employee? (Required)",
-            when: (input) => input.options === "Update an employee role",
             choices: [],
             validate: update_roleInput => {
                 if (update_roleInput) {
@@ -177,7 +178,6 @@ function addRole() {
             type: 'input',
             name: 'role_name',
             message: "What is the name of the role? (Required)",
-            when: (input) => input.options === "Add a role",
             validate: role_nameInput => {
                 if (role_nameInput) {
                     return true;
@@ -191,7 +191,6 @@ function addRole() {
             type: 'input',
             name: 'salary',
             message: "What is the salary of the role? (Required)",
-            when: (input) => input.options === "Add a role",
             validate: salaryInput => {
                 if (salaryInput) {
                     return true;
@@ -205,7 +204,6 @@ function addRole() {
             type: 'input',
             name: 'role_department',
             message: "Which department does the role belong to? (Required)",
-            when: (input) => input.options === "Add a role",
             validate: role_departmentInput => {
                 if (role_departmentInput) {
                     return true;
@@ -238,7 +236,6 @@ function addDepartment() {
             type: 'input',
             name: 'department_name',
             message: "What is the name of the department (Required)",
-            when: (input) => input.options === "Add a department",
             validate: department_nameInput => {
                 if (department_nameInput) {
                     return true;
