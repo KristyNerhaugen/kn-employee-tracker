@@ -10,7 +10,7 @@ const promptQuestions = () => {
             type: 'list',
             name: 'options',
             message: 'Hello! What would you like to do? Please select an option from below. (Required)',
-            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role'],
+            choices: ['View all employees', 'Add an employee', 'Update an employee role', 'View all roles', 'Add a role','View all departments', 'Add a department', 'Quit'],
             validate: optionsInput => {
                 if (optionsInput) {
                     return true;
@@ -21,6 +21,14 @@ const promptQuestions = () => {
             },
         },
 
+        // If 'View all employees' is selected, return employee table
+        // If 'Add an employee' is slected, ask for first name, last name, role, manager and add to database
+        // if 'Update an employee' role is selected, ask to select an employee, then ask to update role, then update database information
+        // if 'View all roles' is selected, return roles table
+        // if 'Add a role' is selected, ask for name, salary, and department for the role, then add role to database
+        // if 'View all departments' is selected, return department table
+        // if 'Add a department' is selected, ask for name, then add department to database 
+        // if 'Quit' is selected, stop promptQuestions
     ])
 };
 
