@@ -3,6 +3,7 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 // require console.table Node.js package so MySQL tables appear in console
 const cTable = require('console.table');
+const { allowedNodeEnvironmentFlags } = require('process');
 
 // Function to prompt array of questions 
 const promptQuestions = () => {
@@ -11,7 +12,7 @@ const promptQuestions = () => {
             type: 'list',
             name: 'options',
             message: "Hello! What would you like to do? Please select an option from below. (Required)",
-            choices: ['View all employees', 'Add an employee', 'Update an employee role', 'View all roles', 'Add a role','View all departments', 'Add a department', 'Quit'],
+            choices: ['View all employees', 'Add an employee', 'Update an employee role', 'View all roles', 'Add a role', 'View all departments', 'Add a department', 'Quit'],
             validate: optionsInput => {
                 if (optionsInput) {
                     return true;
@@ -20,14 +21,45 @@ const promptQuestions = () => {
                     return false;
                 }
             },
-        },
-
+        }
+    ])
         // If 'View all employees' is selected, return employee table
-        //  return 
-            // console.table([
-                 // employee table
-            // ]);
+        .then(data => {
+            if (data.options === 'View all employees') {
+                return viewEmployees();
+            } else if (data.options === 'Add an employee') {
+                return addEmployee();
+            } else if (data.options === 'Update an employee role') {
+                return updateEmployee();
+            } else if (data.options === 'View all roles') {
+                return viewRoles();
+            } else if (data.options === 'Add a role') {
+                return addRole();
+            } else if (data.options === 'View all departments') {
+                return viewDepartments();
+            } else if (data.options === 'Add a department') {
+                return addDepartment();
+            } else if (data.options === 'Quit') {
+                return console.log('Goodbye');
+            }
+        })
+};
 
+// Function viewEmployees to view Employee table
+function viewEmployees() {
+    const sql = `SELECT * FROM employee`;
+    db.query(sql, (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        console.table(rows);
+    });
+};
+
+// Function addEmployee for adding an employee
+function addEmployee() {
+    inquirer.prompt([
         // If 'Add an employee' is selected, ask for first name, last name, role, manager and add to database
         { // ask for employee first name
             type: 'input',
@@ -85,6 +117,12 @@ const promptQuestions = () => {
                 }
             }
         },
+    ])
+};
+
+// function to update employee
+function updateEmployee() {
+    inquirer.prompt([
         // if 'Update an employee' role is selected, ask to select an employee, then ask to update role, then update database information
         { // ask user to select which employee they'd like to update
             type: 'list',
@@ -115,13 +153,25 @@ const promptQuestions = () => {
                     return false;
                 }
             }
-        },
-        // if 'View all roles' is selected, return roles table
-        //  return 
-            // console.table([
-                 // roles table
-            // ]);
+        }
+    ])
+};
 
+// Function viewRoles to view Role table
+function viewRoles() {
+    const sql = `SELECT * FROM role`;
+    db.query(sql, (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        console.table(rows);
+    });
+};
+
+// Function to add a role
+function addRole() {
+    inquirer.prompt([
         // if 'Add a role' is selected, ask for name, salary, and department for the role, then add role to database
         { // ask for name of role
             type: 'input',
@@ -164,13 +214,25 @@ const promptQuestions = () => {
                     return false;
                 }
             }
-        },
-        // if 'View all departments' is selected, return department table
-           //  return 
-            // console.table([
-                 // department table
-            // ]);
+        }
+    ])
+};
 
+// Function viewDepartments to view Department table
+function viewDepartments() {
+    const sql = `SELECT * FROM department`;
+    db.query(sql, (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        console.table(rows);
+    });
+};
+
+// function to add a department 
+function addDepartment() {
+    inquirer.prompt([
         // if 'Add a department' is selected, ask for name, then add department to database 
         { // ask for department name
             type: 'input',
@@ -186,8 +248,6 @@ const promptQuestions = () => {
                 }
             }
         },
-
-        // if 'Quit' is selected, stop promptQuestions
     ])
 };
 
