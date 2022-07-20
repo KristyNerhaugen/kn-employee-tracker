@@ -1,3 +1,5 @@
+// require MySQL2 
+const mysql = require('mysql2');
 // import the Sequelize constructor from the library
 const Sequelize = require('sequelize');
 
