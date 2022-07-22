@@ -186,6 +186,8 @@ function viewRoles() {
 
 // Function to add a role
 function addRole() {
+    const sql = `SELECT role.title FROM role`;
+    console.log(sql);
     inquirer.prompt([
         // if 'Add a role' is selected, ask for name, salary, and department for the role, then add role to database
         { // ask for name of role
@@ -215,9 +217,10 @@ function addRole() {
             }
         },
         { // ask for department of role
-            type: 'input',
+            type: 'list',
             name: 'role_department',
             message: "Which department does the role belong to? (Required)",
+            choices: sql,
             validate: role_departmentInput => {
                 if (role_departmentInput) {
                     return true;
