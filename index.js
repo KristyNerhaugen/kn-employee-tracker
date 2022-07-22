@@ -122,13 +122,13 @@ function addEmployee() {
             }
         },
     ])
-     //.then 
+    //.then 
     // const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
     // const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
 
     // db.query(sql, params, (err, result) => {
     //      if (err) {
-     //   console.log(err)
+    //   console.log(err)
     //}
     //     console.log('Employee added to database!')
     //     });
@@ -228,13 +228,27 @@ function addRole() {
             }
         }
     ])
-     //.then 
+        // add new role title, salary, and department_id into the Roletable 
+        .then(function (answers) {
+            const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+            const params = [answers.role_name, answers.salary, answers.role_department];
+
+            db.query(sql, params, (err) => {
+                if (err) {
+                    console.log(err)
+                }
+                console.log(`${params} added to database!`)
+            });
+            // return to options by calling promptQuestions
+            (promptQuestions());
+        })
+    //.then 
     // const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
     // const params = [body.title, body.salary, body.department_id];
 
     // db.query(sql, params, (err, result) => {
     //      if (err) {
-     //   console.log(err)
+    //   console.log(err)
     //}
     //     console.log('Role added to database!')
     //     });
@@ -273,18 +287,20 @@ function addDepartment() {
             }
         },
     ])
-     //.then 
-    // const sql = `INSERT INTO department (name) VALUES (?)`;
-    // const params = [body.name];
+        // add new department name into the Department table 
+        .then(function (answers) {
+            const sql = `INSERT INTO department (name) VALUES (?)`;
+            const params = [answers.department_name];
 
-    // db.query(sql, params, (err, result) => {
-    //      if (err) {
-     //   console.log(err)
-    //}
-    //     console.log('Department added to database!')
-    //     });
-    // });
-    // (promptQuestions());
+            db.query(sql, params, (err) => {
+                if (err) {
+                    console.log(err)
+                }
+                console.log(`${params} added to database!`)
+            });
+            // return to options by calling promptQuestions
+            (promptQuestions());
+        })
 };
 
 // Initialize app
