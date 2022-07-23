@@ -63,9 +63,6 @@ function viewEmployees() {
 // Function addEmployee for adding an employee
 function addEmployee() {
     inquirer.prompt([
-        // How do we pull role choices from role database? 
-        // const sql = `SELECT role.id, role.title, role.salary, role.department
-        //             FROM role`;
         // If 'Add an employee' is selected, ask for first name, last name, role, manager and add to database
         { // ask for employee first name
             type: 'input',
@@ -97,7 +94,7 @@ function addEmployee() {
             type: 'list',
             name: 'employee_role',
             message: "What is the employee's role? (Required)",
-            choices: [],
+            choices: roleTitles(),
             validate: employee_roleInput => {
                 if (employee_roleInput) {
                     return true;
@@ -111,7 +108,7 @@ function addEmployee() {
             type: 'list',
             name: 'employee_manager',
             message: "Who is the employee's manager? (Required)",
-            choices: [],
+            choices: managerNames(),
             validate: employee_managerInput => {
                 if (employee_managerInput) {
                     return true;
@@ -122,18 +119,20 @@ function addEmployee() {
             }
         },
     ])
-    //.then 
-    // const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
-    // const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
+      // add new employee information into the employee table 
+      .then(function (answers) {
+        const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+        const params = [answes.first_name, answers.last_name, answer.role_id, answers.manager_id];
 
-    // db.query(sql, params, (err, result) => {
-    //      if (err) {
-    //   console.log(err)
-    //}
-    //     console.log('Employee added to database!')
-    //     });
-    // });
-    // (promptQuestions());
+        db.query(sql, params, (err) => {
+            if (err) {
+                console.log(err)
+            }
+            console.log(`${params} added to database!`)
+        });
+        // return to options by calling promptQuestions
+        (promptQuestions());
+    })
 };
 
 // function to update employee
@@ -144,7 +143,7 @@ function updateEmployee() {
             type: 'list',
             name: 'options',
             message: "Which employee's role do you want to update? (Required)",
-            choices: [],
+            choices: employeeNames(),
             validate: optionsInput => {
                 if (optionsInput) {
                     return true;
@@ -158,7 +157,7 @@ function updateEmployee() {
             type: 'list',
             name: 'update_role',
             message: "Which role do you want to assign to the selected employee? (Required)",
-            choices: [],
+            choices: roleTitles(),
             validate: update_roleInput => {
                 if (update_roleInput) {
                     return true;
@@ -186,8 +185,6 @@ function viewRoles() {
 
 // Function to add a role
 function addRole() {
-    const sql = `SELECT role.title FROM role`;
-    console.log(sql);
     inquirer.prompt([
         // if 'Add a role' is selected, ask for name, salary, and department for the role, then add role to database
         { // ask for name of role
@@ -220,7 +217,7 @@ function addRole() {
             type: 'list',
             name: 'role_department',
             message: "Which department does the role belong to? (Required)",
-            choices: sql,
+            choices: roleDepartment(),
             validate: role_departmentInput => {
                 if (role_departmentInput) {
                     return true;
@@ -234,7 +231,7 @@ function addRole() {
         // add new role title, salary, and department_id into the Roletable 
         .then(function (answers) {
             const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
-            const params = [answers.role_name, answers.salary, answers.role_department];
+            const params = [answers.role_title, answers.role_salary, answers.role_department_id];
 
             db.query(sql, params, (err) => {
                 if (err) {
@@ -245,18 +242,6 @@ function addRole() {
             // return to options by calling promptQuestions
             (promptQuestions());
         })
-    //.then 
-    // const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
-    // const params = [body.title, body.salary, body.department_id];
-
-    // db.query(sql, params, (err, result) => {
-    //      if (err) {
-    //   console.log(err)
-    //}
-    //     console.log('Role added to database!')
-    //     });
-    // });
-    // (promptQuestions());
 };
 
 // Function viewDepartments to view Department table
@@ -304,6 +289,55 @@ function addDepartment() {
             // return to options by calling promptQuestions
             (promptQuestions());
         })
+};
+
+// Function roleDepartment to return department name choices
+// Used this website to better understand the forEach array push : https://tutorial.eyehunts.com/js/foreach-push-to-array-javascript-example-code/ 
+function roleDepartment() {
+    const sql = `SELECT name FROM department`;
+    const choices = [];
+    db.query(sql, (err, data) => {
+            data.forEach((sql) => {
+                choices.push(sql.name);
+            });
+    });
+    return choices;
+};
+
+// Function roleTitles to return role title chocies 
+function roleTitles() {
+    const sql = `SELECT title FROM role`;
+    const choices = [];
+    db.query(sql, (err, data) => {
+            data.forEach((sql) => {
+                choices.push(sql.title);
+            });
+    });
+    return choices;
+};
+
+// Function employeeNames to return employee names array 
+function employeeNames() {
+    const sql = `SELECT first_name FROM employee`;
+    const choices = [];
+    db.query(sql, (err, data) => {
+            data.forEach((sql) => {
+                choices.push(sql.first_name);
+            });
+    });
+    return choices;
+};
+
+// Function managerNames to return manger names array choices
+function managerNames() {
+    const sql = `SELECT manager_id FROM employee`;
+    const choices = [];
+    db.query(sql, (err, data) => {
+            data.forEach((sql) => {
+                choices.push(sql.manager_id);
+            });
+    });
+    return choices;
 };
 
 // Initialize app
