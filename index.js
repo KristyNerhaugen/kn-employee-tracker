@@ -122,7 +122,7 @@ function addEmployee() {
       // add new employee information into the employee table 
       .then(function (answers) {
         const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
-        const params = [answes.first_name, answers.last_name, answer.role_id, answers.manager_id];
+        const params = [answes.first_name, answers.last_name, answer.employee_role, answers.employee_manager];
 
         db.query(sql, params, (err) => {
             if (err) {
@@ -136,14 +136,19 @@ function addEmployee() {
 };
 
 // function to update employee
-function updateEmployee() {
+// TA Lexie Crawford shared her code for an example for me to follow for async and await
+const updateEmployee = async () => {
+    let employee = await db.promise().query(`SELECT first_name FROM employee`);
+    let employeeList = employee[0].map((employeeName) => employeeName.first_name);
+    let role = await db.promise().query(`SELECT id FROM role`);
+    let roleTitles = role[0].map((updateRole) => updateRole.id);
     inquirer.prompt([
         // if 'Update an employee' role is selected, ask to select an employee, then ask to update role, then update database information
         { // ask user to select which employee they'd like to update
             type: 'list',
-            name: 'options',
+            name: 'employeeName',
             message: "Which employee's role do you want to update? (Required)",
-            choices: employeeNames(),
+            choices: employeeList,
             validate: optionsInput => {
                 if (optionsInput) {
                     return true;
@@ -155,9 +160,9 @@ function updateEmployee() {
         },
         { // ask user to update employee's role
             type: 'list',
-            name: 'update_role',
+            name: 'updateRole',
             message: "Which role do you want to assign to the selected employee? (Required)",
-            choices: roleTitles(),
+            choices: roleTitles,
             validate: update_roleInput => {
                 if (update_roleInput) {
                     return true;
@@ -231,8 +236,7 @@ function addRole() {
         // add new role title, salary, and department_id into the Roletable 
         .then(function (answers) {
             const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
-            const params = [answers.role_title, answers.role_salary, answers.role_department_id];
-
+            const params = [answers.role_name, answers.salary, answers.role_department];
             db.query(sql, params, (err) => {
                 if (err) {
                     console.log(err)
@@ -294,47 +298,48 @@ function addDepartment() {
 // Function roleDepartment to return department name choices
 // Used this website to better understand the forEach array push : https://tutorial.eyehunts.com/js/foreach-push-to-array-javascript-example-code/ 
 function roleDepartment() {
-    const sql = `SELECT name FROM department`;
+    const sql = `SELECT id FROM department`;
     const choices = [];
     db.query(sql, (err, data) => {
             data.forEach((sql) => {
-                choices.push(sql.name);
+                choices.push(sql.id);
             });
     });
     return choices;
 };
 
-// Function roleTitles to return role title chocies 
-function roleTitles() {
-    const sql = `SELECT title FROM role`;
-    const choices = [];
-    db.query(sql, (err, data) => {
-            data.forEach((sql) => {
-                choices.push(sql.title);
-            });
-    });
-    return choices;
-};
+// // Function roleTitles to return role title chocies 
+// function roleTitles() {
+//     const sql = `SELECT id FROM role`;
+//     const choices = [];
+//     db.query(sql, (err, data) => {
+//         data.forEach((sql) => {
+//                 choices.push(sql.id);
+//             });
+//     });
+//     return choices;
+// };
 
 // Function employeeNames to return employee names array 
-function employeeNames() {
-    const sql = `SELECT first_name FROM employee`;
-    const choices = [];
-    db.query(sql, (err, data) => {
-            data.forEach((sql) => {
-                choices.push(sql.first_name);
-            });
-    });
-    return choices;
-};
+// function employeeNames() {
+//     const sql = `SELECT first_name FROM employee`;
+//     const choices = [];
+//     db.query(sql, (err, data) => {
+//         //console.log(data[0].first_name);
+//             data.forEach((name, index) => {
+//                 choices.push(name.first_name);
+//             });
+//     });
+//     return choices;
+// };
 
-// Function managerNames to return manger names array choices
+// Function managerNames to return manager names array choices
 function managerNames() {
     const sql = `SELECT manager_id FROM employee`;
     const choices = [];
     db.query(sql, (err, data) => {
-            data.forEach((sql) => {
-                choices.push(sql.manager_id);
+            data.forEach((name, index) => {
+                choices.push(name.manager_id);
             });
     });
     return choices;
