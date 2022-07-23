@@ -68,7 +68,7 @@ const addEmployee = async () => {
         map[currentItem.title] = currentItem.id;
         return map;
     });
-    let manager = await db.promise().query(`SELECT manager_id FROM employee`);
+    let manager = await db.promise().query(`SELECT * FROM employee`);
     let managerNames = manager[0].map((employee) => employee.manager_id);
     const managerMap = manager[0].reduce((map, currentItem) => {
         map[currentItem.manager_id] = currentItem.manager_id;
