@@ -15,6 +15,9 @@
 ## Usage
 ### 
 
+### This video shows the functionality of the application:
+### [Video Tutorial](ADD LINK HERE)
+
 ## Credits 
 ### 
 
