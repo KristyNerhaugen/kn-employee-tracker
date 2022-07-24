@@ -47,13 +47,12 @@ const promptQuestions = () => {
         })
 };
 
-// Function viewEmployees to view Employee table
+// Function viewEmployees to view Employee table, with role information
 function viewEmployees() {
     const sql = `SELECT * FROM employee`;
     db.query(sql, (err, rows) => {
         if (err) {
-            res.status(500).json({ error: err.message });
-            return;
+            throw err
         }
         console.table(rows);
         promptQuestions();
