@@ -68,12 +68,12 @@ const addEmployee = async () => {
         map[currentItem.title] = currentItem.id;
         return map;
     });
-    let manager = await db.promise().query(`SELECT * FROM employee`);
-    let managerNames = manager[0].map((employee) => employee.manager_id);
-    const managerMap = manager[0].reduce((map, currentItem) => {
-        map[currentItem.manager_id] = currentItem.manager_id;
-        return map;
-    })
+    // let manager = await db.promise().query(`SELECT manager_id FROM employee`);
+    // let managerNames = manager[0].map((employee) => employee.manager_id);
+    // const managerMap = manager[0].reduce((map, currentItem) => {
+    //     map[currentItem.manager_id] = currentItem.manager_id;
+    //     return map;
+    // });
     inquirer.prompt([
         // If 'Add an employee' is selected, ask for first name, last name, role, manager and add to database
         { // ask for employee first name
@@ -111,21 +111,20 @@ const addEmployee = async () => {
                 if (employeeRoleInput) {
                     return true;
                 } else {
-                    console.log('Please enter the role for the employee.')
+                    console.log('Please select the role for the employee.')
                     return false;
                 }
             }
         },
-        { // ask for manager's name
-            type: 'list',
+        { // ask for manager's id
+            type: 'number',
             name: 'employeeManager',
-            message: "Who is the employee's manager? (Required)",
-            choices: managerNames,
+            message: "What is the ID number for this employee's manager? (Required and only numbers are accepted.)",
             validate: employeeManagerInput => {
                 if (employeeManagerInput) {
                     return true;
                 } else {
-                    console.log('Please enter the name of the manager.')
+                    console.log('Please select the manager ID number.')
                     return false;
                 }
             }
@@ -135,11 +134,11 @@ const addEmployee = async () => {
         .then((answers) => {
             
             const roleId = roleMap[answers.employeeRole];
-            const managerId = managerMap[answers.employeeManager];
+            // const managerId = managerMap[answers.employeeManager];
 
             db.query(
                 `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`,
-                [answers.first_name, answers.last_name, roleId, managerId],
+                [answers.first_name, answers.last_name, roleId, answers.employeeManager],
                 (err, data) => {
                     if (err) throw err;
                     console.log(`Employee added to database!`);
