@@ -224,7 +224,7 @@ function viewRoles() {
 
 // Function to add a role
 const addRole = async () => {
-    let department = await db.promise().query(`SELECT name FROM department`);
+    let department = await db.promise().query(`SELECT * FROM department`);
     let roleDepartment = department[0].map((roleDepartment) => roleDepartment.name);
     const departmentMap = department[0].reduce((map, currentItem) => {
         map[currentItem.name] = currentItem.id;
